@@ -13,16 +13,16 @@ void Mqtt::Stop()
     if(client) esp_mqtt_client_stop(client);
 }
 
-int Mqtt::Publish(char *topic,char *msg) {
+int Mqtt::Publish(const char *topic,const char *msg) {
     //if((xEventGroupGetBits(s_wifi_event_group) & MQTT_CONNECTED_BIT) == false) return;
+    ESP_LOGI(TAG, "Mqtt::Publish topic=%s, msg=%s", topic, msg);
     if(!client) return -1;
     if(!topic) return -2;
     if(!msg) return -3;
-    ESP_LOGI(TAG, "Mqtt::Publish topic=%s, msg=%s", topic, msg);
     return esp_mqtt_client_publish(client, topic, msg, strlen(msg), 0, 0);
-
 }
-int Mqtt::Subscribe(char *topic)
+
+int Mqtt::Subscribe(const char *topic)
 {
     if(!client) return -1;
     if(!topic) return -2;
@@ -58,14 +58,13 @@ void Mqtt::Init(const char* _username, const char* _password,const char* _uri,co
     mqtt_cfg.password=_password;
     mqtt_cfg.cert_pem=_cert;
     mqtt_cfg.skip_cert_common_name_check=true;
-    mqtt_cfg.disable_auto_reconnect=true;
+    mqtt_cfg.disable_auto_reconnect=false;
     client = esp_mqtt_client_init(&mqtt_cfg);
     if(client==NULL) {
         ESP_LOGE(TAG,"esp_mqtt_client_init fails");
         return;
     }
     esp_mqtt_client_register_event(client, (esp_mqtt_event_id_t)ESP_EVENT_ANY_ID, &Mqtt::mqtt_event_handler, (void*)this);
-    ESP_LOGI(TAG,"Mqtt::Init OK");
 }
 
 

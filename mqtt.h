@@ -8,8 +8,8 @@ class Mqtt {
         void Init(const char* username, const char* password,const char* uri,const char* cert);
         void Start();
         void Stop();
-        int Publish(char *topic,char *msg);
-        int Subscribe(char *topic);
+        int Publish(const char *topic,const char *msg);
+        int Subscribe(const char *topic);
         void (*onEvent)(Mqtt* mqtt,esp_mqtt_event_handle_t event);
     private:
         esp_mqtt_client_handle_t client=NULL;
